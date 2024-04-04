@@ -4,6 +4,44 @@
 #include <time.h> 
 #include <stdbool.h> 
 
+
+typedef struct charge_customer
+{
+    int idnum;
+    char lic_plnum[5];
+    char fuel_type[9];
+    float fuel_amount;
+    float deposit_am;
+}chg_cus;
+
+void fuel_menu(){
+    printf("Fuel  Type          Price Per litre($)"); // Display fuel types and prices
+    printf("1. E10-87                 184.90\n");
+    printf("2. E10-90                 193.60\n");
+    printf("3. Diesel                 182.30\n");
+}
+
+void lubricant_menu(){
+    printf("Lubricant Type             Price($)\n"); // Display lubricant types and prices
+    printf("1. 5w-30                    2900.00\n ");
+    printf("2. 5w-40                    3500.00\n ");
+    printf("3. 15w-40                   3600.00\n ");
+    printf("4. SAE-40                   2100.OO\n ");
+}
+
+void gen_receipt(char* cust_type, float final_cost, float cash_tendered, int total_lubcost){
+    printf("\nReceipt:\n");
+    printf("Date of Transaction: %s\n", __DATE__); // Current date
+    printf("Type of Customer: %s\n", cust_type);
+    printf("Item(s) Purchased: Fuel\n");
+    printf("GCT Amount (calculated at 16%% for all lubricants): %.2f\n", total_lubcost * 0.16); // Assuming 16% GCT for all items
+    printf("Total Amount (including GCT): %.2f\n", final_cost);
+    if (strcmp(cust_type, "COD") == 0) {
+        printf("Cash Tendered: %.2f\n", cash_tendered);
+        printf("Change Given: %.2f\n", cash_tendered - final_cost);
+    }
+}
+
 void serv_cust(){ // Function definition to serve the customer
     char cust_type[10]; // Variable to store customer type
     int f_type; // Variable to store fuel type
@@ -16,27 +54,19 @@ void serv_cust(){ // Function definition to serve the customer
     float final_cost; // Variable to store final cost
     int lub_type; // Variable to store lubricant type
     int total_lubcost; // Variable to store total lubricant cost
+    float cash_tendered;
 
     printf("Select customer type(COD or Charge)"); // Prompt user to select customer type
     scanf("%s", cust_type); // Read customer type from user input
 
 
+
     if(strcmp(cust_type, "COD") == 0){ // If customer type is Cash on Delivery (COD)
 
-        printf("Fuel  Type          Price Per litre($)"); // Display fuel types and prices
-        printf("1. E10-87                 184.90\n");
-        printf("2. E10-90                 193.60\n");
-        printf("3. Diesel                 182.30\n");
-
-
+        fuel_menu();
         printf("Enter the number that represent the fuel type purchasing"); // Prompt user to enter fuel type
         scanf("%d", &f_type); // Read fuel type from user input
 
-        printf("Lubricant Type             Price($)"); // Display lubricant types and prices
-        printf("1. 5w-30                    2900.00 ");
-        printf("2. 5w-40                    3500.00 ");
-        printf("3. 15w-40                   3600.00 ");
-        printf("4. SAE-40                   2100.OO ");
 
         printf("Please enter the amount of fuel needed (In litres)."); // Prompt user to enter fuel amount
         scanf("%f", &f_needed); // Read fuel amount from user input
@@ -49,12 +79,7 @@ void serv_cust(){ // Function definition to serve the customer
 
         if (lubricant_request == 'Y') { // If lubricant is requested
 
-            printf("Lubricant Type             Price($)"); // Display lubricant types and prices
-            printf("1. 5w-30                    2900.00 ");
-            printf("2. 5w-40                    3500.00 ");
-            printf("3. 15w-40                   3600.00 ");
-            printf("4. SAE-40                   2100.OO ");
-
+            lubricant_menu();
             printf("Enter the number that represent the lubricant type purchasing."); // Prompt user to enter lubricant type
             scanf("%d", &lub_type); // Read lubricant type from user input
         
@@ -117,6 +142,15 @@ void serv_cust(){ // Function definition to serve the customer
                 }
             }
 
+            if (pay_opt == 1)
+            {
+                printf("Please enter cash tendered: ");
+                scanf("%f", &cash_tendered);
+            }
+                
+                gen_receipt(cust_type, final_cost, cash_tendered, total_lubcost);
+        
+
     }else if(strcmp(cust_type, "charge")==0){ // If customer type is Charge
 
     }
@@ -124,18 +158,6 @@ void serv_cust(){ // Function definition to serve the customer
 }
 
 
-void gen_receipt(int cust_type, float final_cost){
-    printf("\nReceipt:\n");
-    printf("Date of Transaction: %s\n", __DATE__); // Current date
-    printf("Type of Customer: %s\n", cust_type);
-    printf("Item(s) Purchased: Fuel\n");
-    printf("GCT Amount (calculated at 16%% for all lubricants): %.2f\n", total_amount * 0.16); // Assuming 16% GCT for all items
-    printf("Total Amount (including GCT): %.2f\n", total_amount);
-    if (strcmp(cust_type, "COD") == 0) {
-        printf("Cash Tendered: %.2f\n", cash_tendered);
-        printf("Change Given: %.2f\n", cash_tendered - total_amount);
-    }
-}
 
 
 
