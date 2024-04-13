@@ -86,7 +86,7 @@ void ranlubri(float* total_lubcost) {
 void serv_cust(cus_mers servchargcustomer[], int size) {
     cus_mers CODcus;
     cus_mers charge_1;
-
+    int valid_payment=0;
     float E87_tot = 0;
     float E90_tot = 0;
     float d_tot = 0;
@@ -97,7 +97,6 @@ void serv_cust(cus_mers servchargcustomer[], int size) {
     float price_pl = 0; // Variable to store price per litre of fuel
     float tot_lcost = 0; // Variable to store total fuel cost
     float final_cost = 0; // Variable to store final cost
-    float total_lubcost = 0; // Variable to store total lubricant cost
     float cash_tendered = 0;
     int choice = 0;
 
@@ -141,20 +140,20 @@ void serv_cust(cus_mers servchargcustomer[], int size) {
                 break;
         }
 
-        while (true) { // Loop until valid payment option is selected
-            printf("Payment option (1 for cash or 2 for card): "); // Prompt user to select payment option
-            scanf("%d", &pay_opt); // Read payment option from user input
+        do {
+            printf("Payment option (1 for cash or 2 for card): ");
+            scanf("%d", &pay_opt);
 
-            if (CODcus.f_needed < 2 && pay_opt == 1) { // Check if minimum purchase condition for cash payment is met
-                printf("The minimum purchase is two litres for cash payments.\n"); // Display error message
-                continue; // Continue to next iteration of the loop
-            } else if (final_cost < 1000 && pay_opt == 2) { // Check if minimum amount condition for card payment is met
-                printf("The minimum amount is $1000 for card transactions.\n"); // Display error message
-                continue; // Continue to next iteration of the loop
+            if (pay_opt == 1 && CODcus.f_needed < 2) {
+                printf("The minimum purchase is two litres for cash payments.\n");
+            } else if (pay_opt == 2 && final_cost < 1000) {
+                printf("The minimum amount is $1000 for card transactions.\n");
+            } else if (pay_opt == 1 || pay_opt == 2) {
+                valid_payment = 1;
             } else {
-                break; // Exit the loop if payment option is valid
+                printf("Invalid payment option. Please enter 1 for cash or 2 for card.\n");
             }
-        }
+        } while (!valid_payment);
 
         if (pay_opt == 1) {
             printf("Please enter cash tendered: ");
@@ -289,6 +288,13 @@ void serv_cust(cus_mers servchargcustomer[], int size) {
         }
     }
 }
+
+
+
+
+
+
+
 
 int main() {
     cus_mers customers[SIZE]; // Declare an array to hold customer information
